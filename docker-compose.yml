@@ -1,10 +1,44 @@
-version: '3.8'
+name: prooflift
 
 services:
-  # Base de datos PostgreSQL
-  postgres:
+  # === Frontend ===
+  prooflift-fe:
+    build:
+      context: ./prooflift-fe
+    container_name: prooflift-fe
+    restart: always
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_URL=http://localhost:8080              # Spring Boot (auth)
+      - VITE_SUGGEST_API_URL=http://localhost:8082      # FastAPI (exercises)
+    depends_on:
+      - auth_be                                          
+      - prooflift-suggest-be
+    networks:
+      - prooflift_network
+
+  # === FastAPI Backend para Ejercicios ===
+  prooflift-suggest-be:
+    build: ./prooflift-suggest-be
+    container_name: prooflift-suggest-be
+    ports:
+      - "8082:8000"  # Exponemos 8082 externamente, FastAPI corre en 8000 internamente
+    environment:
+      - MONGO_URI=${MONGO_URI}              #  URI de MongoDB en la nube desde .env
+      - MONGO_DB=${MONGO_DB:-prooflift_suggest}  # Nombre de BD desde .env
+      - FE_ORIGIN=http://localhost:3000     # Origin del frontend en Docker
+      - PORT=8000                           #  Puerto interno de FastAPI
+    env_file:
+      - .env                                # Cargar variables desde .env
+    networks:
+      - prooflift_network
+    restart: unless-stopped
+
+  # === PostgreSQL para Auth Backend ===
+  auth_bd:                                               #  Cambiado de postgres
     image: postgres:15-alpine
-    container_name: prooflift_postgres
+    container_name: auth_bd                              #  Cambiado de prooflift_postgres
     environment:
       POSTGRES_DB: auth_login_db
       POSTGRES_USER: postgres
@@ -21,45 +55,23 @@ services:
       timeout: 10s
       retries: 5
 
-  # Backend Spring Boot
-  backend:
+  # === Spring Boot Backend para Auth ===
+  auth_be:                                               #  Cambiado de backend
     build:
       context: ./prooflift-auth-be
       dockerfile: Dockerfile
-    container_name: prooflift_backend
+    container_name: auth_be                              #  Cambiado de prooflift_backend
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/auth_login_db
+      DB_URL: jdbc:postgresql://auth_bd:5432/auth_login_db    # Cambiado postgres por auth_bd
       DB_USERNAME: postgres
       DB_PASSWORD: password123
     ports:
       - "8080:8080"
     depends_on:
-      postgres:
+      auth_bd:                                           #  Cambiado postgres por auth_bd
         condition: service_healthy
     networks:
       - prooflift_network
-    # Removemos el healthcheck por ahora para que no falle
-    # healthcheck:
-    #   test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 5
-    #   start_period: 60s
-
-  # Frontend React
-  frontend:
-    build:
-      context: ./prooflift-fe
-      dockerfile: Dockerfile
-    container_name: prooflift_frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend  # Cambio: solo depende de que exista, no de que esté healthy
-    networks:
-      - prooflift_network
-    environment:
-      - VITE_API_URL=http://localhost:8080
 
 volumes:
   postgres_data:
