@@ -2,6 +2,7 @@ package com.prooflift.login.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,14 +28,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users") // Cambiamos de 'user' a 'users'
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // recomendado usar Long
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    // @Column(nullable = false) comentado para permitir apellido nulo
     private String nombre;
 
     private String apellido;
