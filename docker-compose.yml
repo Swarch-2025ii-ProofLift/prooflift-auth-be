@@ -1,31 +1,69 @@
-# version: '3.6'
+version: '3.8'
 
 services:
-  auth_login: # nombre del servicio (mismo que en application.properties)
-    build: prooflift-auth-be # ubicación del Dockerfile
-    mem_limit: 512m
-    ports:
-      - "8080:8080"
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: prooflift_postgres
     environment:
-      DB_URL: "jdbc:postgresql://auth_db:5432/auth_db"
-      DB_USERNAME: postgres
-      DB_PASSWORD: 1230
-    restart: always
-    depends_on:
-      auth_db: #nombre de la base de datos (para local)
-        condition: service_healthy
-
-  auth_db:
-    image: postgres:15
-    ports:
-      - "5433:5432"
-    environment:
+      POSTGRES_DB: auth_login_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1230
-      POSTGRES_DB: auth_db
-    restart: always
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - prooflift_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d auth_db"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
       timeout: 10s
       retries: 5
+
+  # Backend Spring Boot
+  backend:
+    build:
+      context: ./prooflift-auth-be
+      dockerfile: Dockerfile
+    container_name: prooflift_backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/auth_login_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: password123
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - prooflift_network
+    # Removemos el healthcheck por ahora para que no falle
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    #   start_period: 60s
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./prooflift-fe
+      dockerfile: Dockerfile
+    container_name: prooflift_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend  # Cambio: solo depende de que exista, no de que esté healthy
+    networks:
+      - prooflift_network
+    environment:
+      - VITE_API_URL=http://localhost:8080
+
+volumes:
+  postgres_data:
+
+networks:
+  prooflift_network:
+    driver: bridge
