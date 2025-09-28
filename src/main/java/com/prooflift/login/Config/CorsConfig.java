@@ -14,12 +14,18 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // aplica a todos los endpoints
-                        .allowedOrigins("http://localhost:5173") // frontend
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // métodos permitidos
-                        .allowedHeaders("*"); // todos los headers
+                registry.addMapping("/**")
+                        .allowedOrigins(
+                            "http://localhost:3000",      // Frontend en Docker
+                            "http://localhost:5173",      // Frontend local (Vite)
+                            "http://frontend:80",         // Comunicación entre contenedores
+                            "http://127.0.0.1:3000",     // Alternativa localhost
+                            "http://127.0.0.1:5173"      // Alternativa localhost
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true); // Importante para cookies/auth
             }
         };
     }
-
 }
