@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.prooflift.login.User.User;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
 
 
 
@@ -39,6 +42,16 @@ public class AuthController {
         return ResponseEntity.ok(user.getNombre()); 
         // devuelve el nombre del usuario autenticado para usarlo en el frontend.
         // usa @AuthenticationPrincipal para obtener el usuario autenticado desde el token
+    }
+
+    @GetMapping("/user/{uuid}")
+    public ResponseEntity<String> getUserName(@PathVariable UUID uuid) {
+        try {
+            String userName = authService.getUserNameByUuid(uuid);
+            return ResponseEntity.ok(userName);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
     
 }
