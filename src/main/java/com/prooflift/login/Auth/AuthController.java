@@ -2,12 +2,20 @@ package com.prooflift.login.Auth;
 
 // importaciones para que funcionen las anotaciones (@)
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.prooflift.login.User.User;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
 
 
 @RestController // marca la clase como un controlador REST devuelve JSON
@@ -29,4 +37,21 @@ public class AuthController {
     {    
         return ResponseEntity.ok(authService.register(request)); // devuelve la respuesta con el token
     }
+    @GetMapping("/me")
+    public ResponseEntity<String> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(user.getNombre()); 
+        // devuelve el nombre del usuario autenticado para usarlo en el frontend.
+        // usa @AuthenticationPrincipal para obtener el usuario autenticado desde el token
+    }
+
+    @GetMapping("/user/{uuid}")
+    public ResponseEntity<String> getUserName(@PathVariable UUID uuid) {
+        try {
+            String userName = authService.getUserNameByUuid(uuid);
+            return ResponseEntity.ok(userName);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
 }

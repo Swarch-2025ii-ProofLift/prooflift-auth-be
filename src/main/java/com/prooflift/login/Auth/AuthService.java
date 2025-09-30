@@ -12,6 +12,8 @@ import com.prooflift.login.User.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -57,6 +59,12 @@ public class AuthService {
         return AuthResponse.builder()
             .token(jwtService.getToken(user))
             .build();
+    }
+
+    public String getUserNameByUuid(UUID uuid) {
+        User user = userRepository.findById(uuid)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getNombre();
     }
 
 }
