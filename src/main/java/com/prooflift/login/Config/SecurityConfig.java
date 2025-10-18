@@ -28,6 +28,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authRequest ->
                         authRequest
                                 .requestMatchers("/auth/**").permitAll() // permite /auth/**
+                                .requestMatchers("profile/**").permitAll() // permite /profile/**
+                                .requestMatchers("/update/**").permitAll() // permite /update/**
                                 .anyRequest().authenticated() // las demás requieren autenticación
                 )
                 .sessionManagement(sessionManager ->

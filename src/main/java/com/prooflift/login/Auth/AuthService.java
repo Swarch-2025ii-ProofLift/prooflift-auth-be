@@ -1,4 +1,6 @@
 package com.prooflift.login.Auth;
+// Esta clase maneja la lógica de autenticación y registro
+import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,8 +13,6 @@ import com.prooflift.login.User.User;
 import com.prooflift.login.User.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
