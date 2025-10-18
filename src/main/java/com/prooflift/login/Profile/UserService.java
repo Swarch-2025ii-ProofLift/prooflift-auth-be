@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.prooflift.login.User.User;
+import com.prooflift.login.User.UserDTO;
 import com.prooflift.login.User.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserRepository userRepository;
 
-    public User getUserByUuid(UUID uuid) {
-        User user = userRepository.findById(uuid)
+    public UserDTO getUserByUuid(UUID uuid) { // devuelve un User con datos básicos
+        UserDTO user = userRepository.findUserDTOById(uuid)
             .orElseThrow(() -> new RuntimeException("User not found with UUID: " + uuid));
         return user;
     }
