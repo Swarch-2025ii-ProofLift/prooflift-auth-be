@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prooflift.login.User.User;
+import com.prooflift.login.User.UserDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +29,7 @@ public class UserController {
 
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID uuid){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID uuid){
         return ResponseEntity.ok(userService.getUserByUuid(uuid));
 
     }
