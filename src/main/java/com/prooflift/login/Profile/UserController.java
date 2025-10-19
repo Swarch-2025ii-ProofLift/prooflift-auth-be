@@ -45,12 +45,9 @@ public class UserController {
 
     }
 
-
-
-    // @GetMapping("/all")
-    // public ResponseEntity<List<User>> getAllUsers() {
-    //     List<User> users = userService.getAllUsers();
-    //     return ResponseEntity.ok(users);
-    // }
+    @PatchMapping("change_password/{uuid}")
+    public ResponseEntity<String> changePassword(@PathVariable UUID uuid, @RequestBody ChangePasswordRequest passwordRequest) {
+        return ResponseEntity.ok(userService.changePassword(uuid, passwordRequest));
+    }
 
 }
