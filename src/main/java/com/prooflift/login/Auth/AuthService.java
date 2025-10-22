@@ -1,5 +1,4 @@
 package com.prooflift.login.Auth;
-// Esta clase maneja la lógica de autenticación y registro
 import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -60,11 +59,23 @@ public class AuthService {
             .token(jwtService.getToken(user))
             .build();
     }
-
+    // obtener el nombre del usuario por su UUID
     public String getUserNameByUuid(UUID uuid) {
         User user = userRepository.findById(uuid)
             .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getNombre();
     }
+
+    // // Recuperar contraseña
+    // public String recuperarContraseña(ForgotPasswordRequest emailRequest) {
+    //     User emailUser = userRepository.findByEmail(emailRequest.getEmail())
+    //         .orElseThrow(() -> new RuntimeException("email do not found " + emailRequest.getEmail()));
+
+        
+
+    //     }
+        
+        
+           
 
 }

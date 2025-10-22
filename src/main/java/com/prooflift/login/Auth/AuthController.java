@@ -4,15 +4,12 @@ package com.prooflift.login.Auth;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.prooflift.login.User.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,12 +34,6 @@ public class AuthController {
     {    
         return ResponseEntity.ok(authService.register(request)); // devuelve la respuesta con el token
     }
-    @GetMapping("/me")
-    public ResponseEntity<String> getCurrentUser(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(user.getNombre()); 
-      
-        // usa @AuthenticationPrincipal para obtener el usuario autenticado desde el token
-    }
 
     @GetMapping("/user/{uuid}")
     public ResponseEntity<String> getUserName(@PathVariable UUID uuid) {
@@ -54,5 +45,12 @@ public class AuthController {
         }
           // devuelve el nombre del usuario autenticado para usarlo en el frontend.
     }
+
+    // @PostMapping("/recuperarContraseña")
+    // public ResponseEntity<String> recuperarContraseña(@RequestBody ForgotPasswordRequest emailRequest) {
+    //     return (ResponseEntity.ok(authService.recuperarContraseña(emailRequest)));
+        
+    // }
+    
     
 }

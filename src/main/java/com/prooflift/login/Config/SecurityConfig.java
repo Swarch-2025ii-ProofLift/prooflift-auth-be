@@ -24,11 +24,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(cors -> {}) // nueva sintaxis (usa CorsConfig)
                 .csrf(csrf -> csrf.disable()) // deshabilita la protección CSRF
                 .authorizeHttpRequests(authRequest ->
                         authRequest
                                 .requestMatchers("/auth/**").permitAll() // permite /auth/**
-                                .requestMatchers("profile/**").permitAll() // permite /profile/**
+                                .requestMatchers("/profile/**").permitAll() // permite /profile/**
                                 .requestMatchers("/update/**").permitAll() // permite /update/**
                                 .anyRequest().authenticated() // las demás requieren autenticación
                 )
