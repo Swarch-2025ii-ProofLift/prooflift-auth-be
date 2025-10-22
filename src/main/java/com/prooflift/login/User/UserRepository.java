@@ -13,5 +13,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     // Busca por el id único (UUID)
     Optional<User> findById(UUID id);
     Optional<UserDTO> findUserDTOById(UUID id);
+    Optional<User> findByResetCode(String resetCode);
 }
 

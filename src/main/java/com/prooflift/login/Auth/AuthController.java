@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prooflift.login.Profile.ForgotPasswordRequest;
+import com.prooflift.login.Profile.NewPasswordRequest;
+
 import lombok.RequiredArgsConstructor;
 
 
@@ -46,11 +49,24 @@ public class AuthController {
           // devuelve el nombre del usuario autenticado para usarlo en el frontend.
     }
 
-    // @PostMapping("/recuperarContraseña")
-    // public ResponseEntity<String> recuperarContraseña(@RequestBody ForgotPasswordRequest emailRequest) {
-    //     return (ResponseEntity.ok(authService.recuperarContraseña(emailRequest)));
+    @PostMapping("/recuperarContrasena")
+    public ResponseEntity<String> recuperarContraseña(@RequestBody ForgotPasswordRequest emailRequest) {
+        return (ResponseEntity.ok(authService.recuperarContraseña(emailRequest)));
         
-    // }
+    }
+
+    @PostMapping("/validarCodigo")
+    public ResponseEntity<String> validarCodigo(@RequestBody RequestRecuperationCode codeRequest) {
+        return ResponseEntity.ok(authService.validarCodigo(codeRequest));   
+        
+        
+    }
+
+    @PostMapping("/nuevaContraseña")
+    public ResponseEntity<String> newContraseña(@RequestBody NewPasswordRequest newPassword) {
+        return ResponseEntity.ok(authService.nuevaContraseña(newPassword));
+    }
+    
     
     
 }
