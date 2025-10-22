@@ -33,19 +33,19 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByUuid(uuid));
 
     }
-    @DeleteMapping("delete/{uuid}")
+    @DeleteMapping("/delete/{uuid}")
     public ResponseEntity<Void> deleteUserById(@PathVariable UUID uuid){
         return ResponseEntity.ok(userService.deleteUserByUuid(uuid));
 
     }
 
-    @PatchMapping("update/{uuid}")
+    @PatchMapping("/update/{uuid}")
     public ResponseEntity<User> patchUser(@PathVariable UUID uuid, @RequestBody User userbody) {
         return ResponseEntity.ok(userService.patch_User(uuid, userbody));
 
     }
 
-    @PatchMapping("change_password/{uuid}")
+    @PatchMapping("/change_password/{uuid}")
     public ResponseEntity<String> changePassword(@PathVariable UUID uuid, @RequestBody ChangePasswordRequest passwordRequest) {
         return ResponseEntity.ok(userService.changePassword(uuid, passwordRequest));
     }
