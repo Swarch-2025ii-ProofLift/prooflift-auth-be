@@ -1,5 +1,6 @@
 package com.prooflift.login.User;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -48,6 +49,12 @@ public class User implements UserDetails {
     private Integer edad;
 
     private String sexo;
+
+    @Column(name = "resetCode")
+    private String resetCode;
+
+    @Column(name = "resetCodeExpiration")
+    private LocalDateTime resetCodeExpiration;
 
     @Enumerated(EnumType.STRING)
     private Role role;

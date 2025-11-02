@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prooflift.login.User.User;
+import com.prooflift.login.User.UserDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,28 +29,25 @@ public class UserController {
 
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID uuid){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID uuid){
         return ResponseEntity.ok(userService.getUserByUuid(uuid));
 
     }
-    @DeleteMapping("delete/{uuid}")
+    @DeleteMapping("/delete/{uuid}")
     public ResponseEntity<Void> deleteUserById(@PathVariable UUID uuid){
         return ResponseEntity.ok(userService.deleteUserByUuid(uuid));
 
     }
 
-    @PatchMapping("update/{uuid}")
+    @PatchMapping("/update/{uuid}")
     public ResponseEntity<User> patchUser(@PathVariable UUID uuid, @RequestBody User userbody) {
         return ResponseEntity.ok(userService.patch_User(uuid, userbody));
 
     }
 
-
-
-    // @GetMapping("/all")
-    // public ResponseEntity<List<User>> getAllUsers() {
-    //     List<User> users = userService.getAllUsers();
-    //     return ResponseEntity.ok(users);
-    // }
+    @PatchMapping("/change_password/{uuid}")
+    public ResponseEntity<String> changePassword(@PathVariable UUID uuid, @RequestBody ChangePasswordRequest passwordRequest) {
+        return ResponseEntity.ok(userService.changePassword(uuid, passwordRequest));
+    }
 
 }

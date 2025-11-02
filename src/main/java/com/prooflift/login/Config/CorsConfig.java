@@ -20,9 +20,10 @@ public class CorsConfig {
                             "http://localhost:5173",      // Frontend local (Vite)
                             "http://frontend:80",         // Comunicación entre contenedores
                             "http://127.0.0.1:3000",     // Alternativa localhost
-                            "http://127.0.0.1:5173"      // Alternativa localhost
+                            "http://127.0.0.1:5173"     // Alternativa localhost
+                            
                         )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true); // Importante para cookies/auth
             }
